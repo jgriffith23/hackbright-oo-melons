@@ -1,5 +1,7 @@
 """This file should have our order classes in it."""
 
+from random import randint
+
 # Parent class for melon orders. No class-level attributes.
 class AbstractMelonOrder(object):
 
@@ -12,12 +14,16 @@ class AbstractMelonOrder(object):
         self.country_code = country_code
         self.fee = 0
 
+    # Choose base price randomly for splurge pricing. 
+    def get_base_price(self):
+        return randint(5,9)
+
     #Method calculates the total for melon order. Fee defaults to 0 unless
     #a fee is applied in a later method. 
     def get_total(self):
         """Calculate price."""
 
-        base_price = 5
+        base_price = self.get_base_price()
         #Checks to see if the melon being ordered is a Christmas Melon. If so, 
         #Sets the base_price to 1.5 times the orgininal base_price. 
         if self.species.lower() == "christmas melon":
@@ -25,7 +31,6 @@ class AbstractMelonOrder(object):
         #Calculates the total using the tax (individually defined), quantity, 
         #base_price and fee. 
         total = (1 + self.tax) * self.qty * base_price + self.fee
-
         return total
 
     def mark_shipped(self):
@@ -55,15 +60,28 @@ class DomesticMelonOrder(AbstractMelonOrder):
         self.tax = 0.08
 
 class GovernmentMelonOrder(DomesticMelonOrder):
-    """A domenstic (in the US) melon order specifically for the US government."""
+    """A domestic (in the US) melon order specifically for the US government."""
 
     def __init__(self, species, qty):
         super(GovernmentMelonOrder,self).__init__(species,qty)
         self.tax = 0.0
-        self.passed_inspection = False
+        self.inspected = False
+        #Made inspection_result none to indicate that it has not been inspected yet. 
+        #Making it false was too ambiguous, can't tell if it failed or never inspected.
+        self.inspection_result = None 
 
-    def mark_inspection(self, passed=False):
-        self.passed_inspection = passed
+    # Part 3 solution based on instructions: 
+    #   self.passed_inspection = False
+
+    # def mark_inspection(self, passed):
+    #     self.passed_inspection = passed
+
+    #Modified Part 3 solution
+    def mark_inspection(self,result):
+        #Takes the user's input for "result" and assigns it to instance attr
+        #self.inspection_result. Marks the instance attr of self.inspected to True.
+        self.inspection_result = result
+        self.inspected = True
 
 # A subclass, InternationalMelonOrder, that inherits from AbstractMelonOrder.
 class InternationalMelonOrder(AbstractMelonOrder):
