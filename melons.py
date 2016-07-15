@@ -54,6 +54,17 @@ class DomesticMelonOrder(AbstractMelonOrder):
         self.order_type = "domestic"
         self.tax = 0.08
 
+class GovernmentMelonOrder(DomesticMelonOrder):
+    """A domenstic (in the US) melon order specifically for the US government."""
+
+    def __init__(self, species, qty):
+        super(GovernmentMelonOrder,self).__init__(species,qty)
+        self.tax = 0.0
+        self.passed_inspection = False
+
+    def mark_inspection(self, passed=False):
+        self.passed_inspection = passed
+
 # A subclass, InternationalMelonOrder, that inherits from AbstractMelonOrder.
 class InternationalMelonOrder(AbstractMelonOrder):
     """An international (non-US) melon order."""
@@ -74,3 +85,4 @@ class InternationalMelonOrder(AbstractMelonOrder):
         # $3.00, overriding the default of $0. 
         if self.qty < 10:
             self.fee = 3.00
+
